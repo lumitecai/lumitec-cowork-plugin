@@ -1,0 +1,36 @@
+{
+  "name": "lumitec-amazon",
+  "description": "Amazon SP-API and Advertising API MCP servers, hosted on Fly.io. Credentials are supplied per-request via Cowork secrets — no OAuth, no binaries shipped.",
+  "version": "2.0.0",
+  "homepage": "https://lumitec.ai",
+  "author": {
+    "name": "Lumitec Ltd",
+    "email": "support@lumitec.ai"
+  },
+  "mcpServers": {
+    "amazon-sp-api": {
+      "type": "http",
+      "url": "https://lumitec-sp-api-mcp.fly.dev/mcp",
+      "headers": {
+        "X-Lumitec-Key":           "${LUMITEC_MCP_KEY}",
+        "X-SP-API-Client-Id":      "${SP_API_CLIENT_ID}",
+        "X-SP-API-Client-Secret":  "${SP_API_CLIENT_SECRET}",
+        "X-SP-API-Refresh-Token":  "${SP_API_REFRESH_TOKEN}",
+        "X-SP-API-Region":         "${SP_API_REGION:-eu}",
+        "X-SP-API-Marketplace-Id": "${SP_API_MARKETPLACE_ID}",
+        "X-SP-API-Seller-Id":      "${SP_API_SELLER_ID}"
+      }
+    },
+    "amazon-ads-api": {
+      "type": "http",
+      "url": "https://lumitec-ads-api-mcp.fly.dev/mcp",
+      "headers": {
+        "X-Lumitec-Key":       "${LUMITEC_MCP_KEY}",
+        "X-Ads-Client-Id":     "${ADS_API_CLIENT_ID}",
+        "X-Ads-Client-Secret": "${ADS_API_CLIENT_SECRET}",
+        "X-Ads-Refresh-Token": "${ADS_API_REFRESH_TOKEN}",
+        "X-Ads-Region":        "${ADS_API_REGION:-eu}"
+      }
+    }
+  }
+}

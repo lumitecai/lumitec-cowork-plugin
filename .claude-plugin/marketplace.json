@@ -1,0 +1,21 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "lumitec-amazon",
+  "description": "Amazon SP-API and Advertising API MCP servers for Lumitec agents",
+  "owner": {
+    "name": "Lumitec Ltd",
+    "email": "support@lumitec.ai"
+  },
+  "metadata": {
+    "description": "Amazon SP-API and Advertising API MCP servers for Lumitec agents — non-OAuth, credentials via Cowork generic secrets"
+  },
+  "plugins": [
+    {
+      "name": "lumitec-amazon",
+      "description": "Amazon Selling Partner API and Advertising API MCP servers, bundled as a single Cowork plugin",
+      "category": "productivity",
+      "source": "./plugins/lumitec-amazon",
+      "homepage": "https://lumitec.ai"
+    }
+  ]
+}

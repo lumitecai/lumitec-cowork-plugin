@@ -1,22 +1,169 @@
 ---
 name: setup-amazon
 description: |
-  Guide a user through connecting the Lumitec Amazon MCPs (SP-API and
-  Advertising API) to their Claude client. Collect credentials conversationally,
-  validate their shape, optionally verify live via the existing MCP, and
-  produce a ready-to-paste claude_desktop_config.json snippet with the
-  correct OS-specific path instructions. Use this whenever the user asks to
-  "set up Amazon", "connect Amazon", "configure the Amazon MCP", "install
-  the Lumitec Amazon plugin", or similar.
+  Onboard a user onto the Lumitec Amazon MCPs (SP-API and Advertising API).
+  Collects their Amazon credentials conversationally, validates each field,
+  and configures their Claude client. In Claude Cowork this runs fully
+  automated — the skill reads/writes the Claude config file directly via a
+  mounted host directory. In Claude Desktop it produces a ready-to-paste
+  JSON snippet with OS-specific path guidance. In Claude Code it directs
+  the user at `claude plugin install` + env vars. Use this whenever the
+  user says anything like "set up Amazon", "connect Amazon", "install the
+  Lumitec Amazon plugin", "configure the Amazon MCP", "connect my seller
+  account", "add amazon", "get started with amazon", or any first-time
+  onboarding language. Also use if a tool call fails with "missing or
+  invalid X-Lumitec-Key" or "Failed to authenticate with Amazon" — those
+  usually mean the setup was never completed or the creds are wrong.
 ---
 
 # Setup Lumitec Amazon MCP
 
 You are walking a user through connecting their Amazon seller account to
-Claude via the Lumitec hosted MCP servers. Your goal: produce a correct,
-copy-paste-ready JSON snippet they can put into their Claude config file.
+Claude via the Lumitec hosted MCP servers. The exact flow depends on which
+Claude client you're running in.
 
-## How to run this flow
+## Pick the right flow
+
+**First, detect which path applies by looking at your tool list:**
+
+- If you have `mcp__workspace__bash` (or any `mcp__cowork__*` tool) →
+  you're in **Claude Cowork**. Drive the whole install end-to-end — read
+  and write the config file directly via a mounted host directory. Jump
+  to the **"Cowork automation flow"** section below.
+
+- If you don't have those tools but the user mentions Claude Desktop, the
+  Claude macOS/Windows/Linux app, or says "Claude" without specifying →
+  you're driving **Claude Desktop**. Produce the JSON snippet and walk
+  the user through pasting it into their config file manually. Use the
+  **"Desktop manual-paste flow"** further down.
+
+- If the user is in **Claude Code** (they'll typically be in a terminal):
+  point them at `claude plugin install` + shell env vars or
+  `claude mcp add --transport http --header …`. Brief explanation at the
+  bottom of this skill.
+
+If you genuinely can't tell, ask: *"Are you in Claude Desktop, Claude
+Cowork, or using the `claude` CLI?"*
+
+---
+
+## Cowork automation flow
+
+When `mcp__workspace__bash` is available you can fully drive the install.
+The user's manual work drops to: install Node (if not already), approve
+one directory mount, answer credential questions, and restart Claude at
+the end.
+
+### Step 1 — Prerequisites check (inside the VM)
+
+Run `mcp__workspace__bash node --version`. *However*, this checks the
+VM's Node, not the host's — what matters is that **the host has Node**
+because `npx mcp-remote` spawns on the host when Claude Desktop/Cowork
+reads the config file. Ask the user directly:
+
+> "Open a terminal on your host (Terminal on Mac, PowerShell on Windows)
+> and run `node --version`. Tell me what it prints."
+
+If missing → point them to <https://nodejs.org/en/download> (LTS
+installer), have them install it, then continue. If present (v20+) →
+proceed.
+
+### Step 2 — Determine the host OS
+
+Ask: *"Are you on Mac, Windows, or Linux?"* (this determines the config
+file path). Remember the answer.
+
+### Step 3 — Request a directory mount
+
+Tell the user: *"I need to write to your Claude config folder. A dialog
+will appear in Cowork asking you to approve access to that folder.
+Please click Approve."*
+
+Then call `request_cowork_directory` with the appropriate host path:
+
+- **Mac**: `~/Library/Application Support/Claude`
+- **Windows**: `%APPDATA%\Claude` (which expands to
+  `C:\Users\<you>\AppData\Roaming\Claude`)
+- **Linux**: `~/.config/Claude`
+
+The user clicks Approve in Cowork's UI. The folder now appears at
+something like `/sessions/<session-name>/mnt/Claude/` inside the VM.
+
+If the mount fails (user denies, path doesn't exist, etc.) → fall back
+to the **Desktop manual-paste flow** so they can still finish by hand.
+
+### Step 4 — Read any existing config
+
+Inside the mount, check for `claude_desktop_config.json`:
+
+```bash
+cat "$MOUNT_PATH/claude_desktop_config.json" 2>/dev/null || echo '{}'
+```
+
+Two possibilities:
+
+- File exists → parse its JSON. Preserve every existing `mcpServers`
+  entry (the user may already have other MCPs installed). Preserve any
+  other top-level keys too.
+- File doesn't exist or is empty → start with `{}`.
+
+If the existing file is malformed JSON, **do not overwrite blindly** —
+tell the user the file is broken, show the parse error, and ask whether
+they want you to replace it with a fresh config (confirming they'll
+lose any existing MCP entries) or abort so they can fix it manually.
+
+### Step 5 — Collect credentials
+
+Same as the Desktop flow — ask for each block (Lumitec key, SP-API
+creds, Ads creds) one at a time, validate shape before moving on. See
+the **"Credentials to collect"** section further down for the detailed
+list and validation rules.
+
+### Step 6 — Merge and write
+
+Build the new config object: existing fields preserved, existing
+`mcpServers` preserved, then add/overwrite two keys —
+`amazon-sp-api` and `amazon-ads-api` — with the full structure from
+the **"Final JSON template"** section below.
+
+Write atomically via a temp file + rename to avoid leaving a half-written
+config if something goes wrong mid-write:
+
+```bash
+cat > "$MOUNT_PATH/claude_desktop_config.json.tmp" <<'EOF'
+<final merged JSON here>
+EOF
+mv "$MOUNT_PATH/claude_desktop_config.json.tmp" \
+   "$MOUNT_PATH/claude_desktop_config.json"
+```
+
+**Cowork mount-sync gotcha** ([bug #30364](https://github.com/anthropics/claude-code/issues/30364)):
+only the first file write on a newly-mounted directory is guaranteed
+to sync to the host. To dodge it, do the write as a single atomic
+operation — one `mv` into place — not multiple sequential writes.
+
+### Step 7 — Confirm and tell the user to restart
+
+Show a short diff of what you added (or `cat` the new `mcpServers`
+keys you introduced) so they can see what landed. Then:
+
+> "Config saved. To finish, please fully quit Claude (on Mac: ⌘Q; on
+> Windows: right-click the Claude icon in the system tray → Quit) and
+> reopen it. The first launch takes ~10 seconds while `npx` downloads
+> the bridge. Then come back and I'll verify everything connected."
+
+### Step 8 — After they restart, verify
+
+Once the user is back, the MCP tools (`checkCredentials`,
+`getMarketplaceParticipations`, etc.) should be visible in your tool
+list. Run `checkCredentials` on both MCPs and report the outcome.
+
+---
+
+## Desktop manual-paste flow
+
+Use this when you're in Claude Desktop (no VM tools available) OR as a
+fallback if the Cowork mount step fails.
 
 1. **Greet briefly** and tell them this will take ~5 minutes if they already
    have their Amazon credentials in hand. If they don't have an SP-API /

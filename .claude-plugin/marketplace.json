@@ -4,7 +4,8 @@
   "description": "Amazon SP-API and Advertising API MCP servers for Lumitec agents",
   "owner": {
     "name": "Lumitec Ltd",
-    "email": "support@lumitec.ai"
+    "email": "a.walters@lumitec.ai",
+    "url": "https://lumitec.ai"
   },
   "metadata": {
     "description": "Amazon SP-API and Advertising API MCP servers for Lumitec agents — non-OAuth, credentials via Cowork generic secrets"

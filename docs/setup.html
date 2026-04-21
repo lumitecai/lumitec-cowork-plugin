@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lumitec Amazon MCP — Setup</title>
+<style>
+  :root {
+    --bg: #0f1115;
+    --card: #15181f;
+    --fg: #e6e8ec;
+    --dim: #9aa0a6;
+    --accent: #ff6b35;
+    --ok: #4ade80;
+    --warn: #fbbf24;
+    --err: #f87171;
+    --border: #2a2f3a;
+    --code-bg: #0b0d11;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--fg); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; line-height: 1.5; }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 32px 24px 120px; }
+  h1 { font-size: 28px; margin: 0 0 4px; letter-spacing: -0.01em; }
+  h2 { font-size: 18px; margin: 32px 0 12px; padding-top: 20px; border-top: 1px solid var(--border); }
+  h3 { font-size: 14px; margin: 20px 0 8px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600; }
+  p  { margin: 8px 0; color: var(--fg); }
+  .sub { color: var(--dim); font-size: 14px; margin-bottom: 24px; }
+  a  { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin: 16px 0; }
+  label { display: block; margin: 10px 0 4px; font-size: 13px; font-weight: 500; }
+  .hint { color: var(--dim); font-size: 12px; margin: 2px 0 6px; }
+  .hint a { color: var(--dim); text-decoration: underline; }
+  input, select, textarea {
+    width: 100%;
+    padding: 8px 10px;
+    background: var(--bg);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px;
+  }
+  input:focus, select:focus, textarea:focus { outline: 1px solid var(--accent); border-color: var(--accent); }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 640px) { .row { grid-template-columns: 1fr; } }
+  .reveal { display: inline-block; font-size: 11px; color: var(--dim); cursor: pointer; margin-left: 4px; user-select: none; }
+  .reveal:hover { color: var(--fg); }
+
+  button {
+    background: var(--accent); color: #111; border: none; padding: 10px 18px;
+    font-size: 14px; font-weight: 600; border-radius: 6px; cursor: pointer;
+  }
+  button:hover { filter: brightness(1.08); }
+  button.secondary { background: var(--border); color: var(--fg); }
+
+  pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 6px; padding: 14px; overflow-x: auto; font-size: 12.5px; line-height: 1.45; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--code-bg); padding: 1px 5px; border-radius: 3px; font-size: 13px; }
+
+  .status { padding: 8px 12px; border-radius: 6px; font-size: 13px; margin: 12px 0; display: none; }
+  .status.ok   { display: block; background: #0f2a1a; color: var(--ok);   border: 1px solid #1b4430; }
+  .status.warn { display: block; background: #2a220d; color: var(--warn); border: 1px solid #4a3a14; }
+  .status.err  { display: block; background: #2a1111; color: var(--err);  border: 1px solid #4a1d1d; }
+
+  .tabs { display: flex; gap: 4px; margin-top: 10px; border-bottom: 1px solid var(--border); }
+  .tab  { padding: 8px 14px; cursor: pointer; font-size: 13px; color: var(--dim); border-bottom: 2px solid transparent; }
+  .tab.active { color: var(--fg); border-bottom-color: var(--accent); }
+  .tab-panel { display: none; padding: 12px 0; }
+  .tab-panel.active { display: block; }
+
+  .copyrow { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+  .warn-box { border: 1px solid var(--warn); background: #2a220d; padding: 10px 14px; border-radius: 6px; font-size: 13px; color: #fde68a; margin: 12px 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Lumitec Amazon MCP — Setup</h1>
+  <p class="sub">
+    Generate your Claude Desktop / Cowork config snippet. Nothing leaves this page —
+    the form runs in your browser and produces JSON you paste into your local config file.
+    <a href="https://github.com/lumitecai/lumitec-cowork-plugin">View on GitHub</a>
+  </p>
+
+  <div class="card">
+    <h3>1. Shared access</h3>
+    <label>Lumitec access key</label>
+    <div class="hint">Issued by Lumitec. If you don't have one, email <a href="mailto:a.walters@lumitec.ai">a.walters@lumitec.ai</a>. Starts with <code>lk_</code>.</div>
+    <input id="lumitec_key" type="password" placeholder="lk_..." autocomplete="off">
+    <span class="reveal" data-for="lumitec_key">👁 show</span>
+  </div>
+
+  <div class="card">
+    <h3>2. SP-API credentials</h3>
+    <p class="hint">From your Amazon <a href="https://developer-docs.amazon.com/sp-api/" target="_blank" rel="noopener">SP-API developer account</a>. If you haven't registered an SP-API app yet, do that first.</p>
+
+    <div class="row">
+      <div>
+        <label>Client ID</label>
+        <div class="hint">Developer Central → Your App → LWA Credentials</div>
+        <input id="sp_client_id" placeholder="amzn1.application-oa2-client.…" autocomplete="off">
+      </div>
+      <div>
+        <label>Client Secret <span class="reveal" data-for="sp_client_secret">👁</span></label>
+        <div class="hint">Same page as Client ID, revealed once on creation</div>
+        <input id="sp_client_secret" type="password" placeholder="amzn1.oa2-cs.v1.…" autocomplete="off">
+      </div>
+    </div>
+
+    <label>Refresh Token <span class="reveal" data-for="sp_refresh_token">👁</span></label>
+    <div class="hint">From the seller authorisation flow — region-locked. Starts with <code>Atzr|</code>.</div>
+    <input id="sp_refresh_token" type="password" placeholder="Atzr|IwE…" autocomplete="off">
+
+    <div class="row">
+      <div>
+        <label>Region</label>
+        <div class="hint">Must match the refresh token above</div>
+        <select id="sp_region">
+          <option value="eu">EU (Europe, UK, Middle East)</option>
+          <option value="na">NA (North America)</option>
+          <option value="fe">FE (Far East — JP, AU, IN, SG)</option>
+        </select>
+      </div>
+      <div>
+        <label>Marketplace ID</label>
+        <div class="hint">Default marketplace for tools that need one</div>
+        <select id="sp_marketplace_preset">
+          <option value="">— choose a marketplace —</option>
+          <optgroup label="Europe">
+            <option value="A1F83G8C2ARO7P">UK — Amazon.co.uk</option>
+            <option value="A1PA6795UKMFR9">Germany — Amazon.de</option>
+            <option value="A13V1IB3VIYZZH">France — Amazon.fr</option>
+            <option value="APJ6JRA9NG5V4">Italy — Amazon.it</option>
+            <option value="A1RKKUPIHCS9HS">Spain — Amazon.es</option>
+            <option value="A1805IZSGTT6HS">Netherlands — Amazon.nl</option>
+            <option value="A2NODRKZP88ZB9">Sweden — Amazon.se</option>
+            <option value="A1C3SOZRARQ6R3">Poland — Amazon.pl</option>
+            <option value="AMEN7PMS3EDWL">Belgium — Amazon.com.be</option>
+            <option value="A28R8C7NBKEWEA">Ireland — Amazon.ie</option>
+          </optgroup>
+          <optgroup label="North America">
+            <option value="ATVPDKIKX0DER">US — Amazon.com</option>
+            <option value="A2EUQ1WTGCTBG2">Canada — Amazon.ca</option>
+            <option value="A1AM78C64UM0Y8">Mexico — Amazon.com.mx</option>
+          </optgroup>
+          <optgroup label="Middle East &amp; Africa">
+            <option value="A17E79C6D8DWNP">Saudi Arabia — Amazon.sa</option>
+            <option value="A2VIGQ35RCS4UG">UAE — Amazon.ae</option>
+            <option value="ARBP9OOSHTCHU">Egypt — Amazon.eg</option>
+            <option value="A33AVAJ2PDY3EV">Turkey — Amazon.com.tr</option>
+          </optgroup>
+          <optgroup label="Asia-Pacific">
+            <option value="A1VC38T7YXB528">Japan — Amazon.co.jp</option>
+            <option value="A39IBJ37TRP1C6">Australia — Amazon.com.au</option>
+            <option value="A21TJRUUN4KGV">India — Amazon.in</option>
+          </optgroup>
+          <option value="__custom__">Other (enter manually)</option>
+        </select>
+        <input id="sp_marketplace_id" placeholder="Or paste marketplace ID directly" style="margin-top:6px">
+      </div>
+    </div>
+
+    <label>Seller ID</label>
+    <div class="hint">Seller Central → Settings → Account Info → Merchant Token. Starts with <code>A</code>.</div>
+    <input id="sp_seller_id" placeholder="A3JEKG1WEL1FC" autocomplete="off">
+  </div>
+
+  <div class="card">
+    <h3>3. Ads API credentials</h3>
+    <p class="hint">Separate from SP-API — registered in <a href="https://advertising.amazon.com/API/docs/" target="_blank" rel="noopener">Amazon Advertising Console</a>. Skip this section if you only use SP-API.</p>
+
+    <div class="row">
+      <div>
+        <label>Client ID</label>
+        <input id="ads_client_id" placeholder="amzn1.application-oa2-client.…" autocomplete="off">
+      </div>
+      <div>
+        <label>Client Secret <span class="reveal" data-for="ads_client_secret">👁</span></label>
+        <input id="ads_client_secret" type="password" placeholder="amzn1.oa2-cs.v1.…" autocomplete="off">
+      </div>
+    </div>
+
+    <label>Refresh Token <span class="reveal" data-for="ads_refresh_token">👁</span></label>
+    <input id="ads_refresh_token" type="password" placeholder="Atzr|IwE…" autocomplete="off">
+
+    <label>Region</label>
+    <select id="ads_region">
+      <option value="eu">EU</option>
+      <option value="na">NA</option>
+      <option value="fe">FE</option>
+    </select>
+  </div>
+
+  <div style="margin-top: 20px">
+    <button id="gen">Generate config</button>
+    <button class="secondary" id="clear" style="margin-left: 8px">Clear all fields</button>
+  </div>
+
+  <div id="status" class="status"></div>
+
+  <h2>Your config snippet</h2>
+  <p class="sub">Paste this <strong>inside</strong> the <code>mcpServers</code> object of your Claude config file.
+     If the file already has other MCPs, merge these keys in; don't replace the whole object.</p>
+  <div class="copyrow">
+    <button id="copy" class="secondary">📋 Copy</button>
+    <button id="download" class="secondary">⬇ Download as .json</button>
+  </div>
+  <pre id="out">(fill the form above and click Generate)</pre>
+
+  <h2>Where to paste it</h2>
+  <div class="tabs">
+    <div class="tab active" data-os="mac">macOS</div>
+    <div class="tab" data-os="win">Windows</div>
+    <div class="tab" data-os="linux">Linux</div>
+  </div>
+  <div class="tab-panel active" data-os="mac">
+    <p>Open in your editor:</p>
+    <pre>~/Library/Application Support/Claude/claude_desktop_config.json</pre>
+    <p>Or from Terminal:</p>
+    <pre>open -a TextEdit ~/Library/Application\ Support/Claude/claude_desktop_config.json</pre>
+  </div>
+  <div class="tab-panel" data-os="win">
+    <p>In Explorer address bar, paste:</p>
+    <pre>%APPDATA%\Claude\claude_desktop_config.json</pre>
+    <p>Or in PowerShell:</p>
+    <pre>notepad $env:APPDATA\Claude\claude_desktop_config.json</pre>
+  </div>
+  <div class="tab-panel" data-os="linux">
+    <pre>~/.config/Claude/claude_desktop_config.json</pre>
+  </div>
+
+  <h2>Restart Claude</h2>
+  <p>After saving, fully quit Claude (<kbd>⌘Q</kbd> on Mac / <kbd>Alt+F4</kbd> on Windows) and reopen it.
+     First launch downloads <code>mcp-remote</code> (~10 seconds); subsequent launches are instant.</p>
+
+  <h2>Verify</h2>
+  <p>In a new chat, try:</p>
+  <pre>list my amazon marketplaces via the amazon-sp-api connector</pre>
+  <pre>check my amazon ads credentials</pre>
+  <p>Both should return real data from your account.</p>
+
+  <div class="warn-box">
+    <strong>Prerequisites:</strong> you must have <a href="https://nodejs.org/en/download" target="_blank" rel="noopener">Node.js</a> installed — the config uses <code>npx</code> to run the bridge that forwards requests to Lumitec's hosted server.
+  </div>
+
+  <h2>Troubleshooting</h2>
+  <p><strong>"Some MCP servers could not be loaded"</strong> — you probably pasted the snippet outside the <code>mcpServers</code> object, or with a trailing comma issue. Validate the full file at <a href="https://jsonlint.com" target="_blank" rel="noopener">jsonlint.com</a>.</p>
+  <p><strong>"missing or invalid X-Lumitec-Key"</strong> — the Lumitec key is wrong or expired. Email <a href="mailto:a.walters@lumitec.ai">a.walters@lumitec.ai</a>.</p>
+  <p><strong>"Failed to authenticate with Amazon"</strong> — your Amazon Client ID / Secret / Refresh Token combination is wrong. Refresh tokens are region-locked: a token issued under the EU marketplace won't work with <code>region: na</code>. Re-run the seller authorisation flow for the right region.</p>
+  <p><strong>MCPs don't appear after restart</strong> — check Claude Desktop is showing the right config file: <em>Settings → Developer → MCP Config</em>. If Node is missing, install it from <a href="https://nodejs.org/en/download" target="_blank" rel="noopener">nodejs.org</a>.</p>
+
+<script>
+const $ = id => document.getElementById(id);
+
+// Reveal toggles
+document.querySelectorAll('.reveal').forEach(el => {
+  el.addEventListener('click', () => {
+    const input = $(el.dataset.for);
+    if (!input) return;
+    input.type = input.type === 'password' ? 'text' : 'password';
+    el.textContent = input.type === 'password' ? '👁 show' : '🙈 hide';
+  });
+});
+
+// Marketplace preset → text field
+$('sp_marketplace_preset').addEventListener('change', e => {
+  const v = e.target.value;
+  if (v && v !== '__custom__') $('sp_marketplace_id').value = v;
+  if (v === '__custom__') $('sp_marketplace_id').focus();
+});
+
+// OS tabs
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    document.querySelector(`.tab-panel[data-os="${t.dataset.os}"]`).classList.add('active');
+  });
+});
+
+// Auto-detect OS
+const ua = navigator.userAgent.toLowerCase();
+if (ua.includes('win')) document.querySelector('.tab[data-os="win"]').click();
+else if (ua.includes('linux') && !ua.includes('android')) document.querySelector('.tab[data-os="linux"]').click();
+
+function setStatus(msg, kind) {
+  const s = $('status');
+  s.className = 'status ' + kind;
+  s.textContent = msg;
+}
+
+function validate() {
+  const errors = [];
+  const warnings = [];
+  const g = id => ($(id).value || '').trim();
+
+  if (!g('lumitec_key'))         errors.push('Lumitec access key is required.');
+  else if (!g('lumitec_key').startsWith('lk_'))
+    warnings.push('Lumitec key usually starts with "lk_" — double-check.');
+
+  // Either SP-API or Ads must be fully filled; not both required.
+  const spFilled  = ['sp_client_id','sp_client_secret','sp_refresh_token','sp_seller_id','sp_marketplace_id'].map(g).every(v => v);
+  const adsFilled = ['ads_client_id','ads_client_secret','ads_refresh_token'].map(g).every(v => v);
+  if (!spFilled && !adsFilled) errors.push('Fill in at least one of SP-API or Ads API credentials.');
+
+  if (spFilled) {
+    if (!g('sp_client_id').startsWith('amzn1.application-oa2-client.'))
+      warnings.push('SP-API Client ID usually starts with "amzn1.application-oa2-client."');
+    if (!g('sp_refresh_token').startsWith('Atzr|'))
+      warnings.push('SP-API Refresh Token usually starts with "Atzr|".');
+  }
+  if (adsFilled) {
+    if (!g('ads_client_id').startsWith('amzn1.application-oa2-client.'))
+      warnings.push('Ads Client ID usually starts with "amzn1.application-oa2-client."');
+    if (!g('ads_refresh_token').startsWith('Atzr|'))
+      warnings.push('Ads Refresh Token usually starts with "Atzr|".');
+  }
+
+  return { errors, warnings, spFilled, adsFilled };
+}
+
+function buildConfig() {
+  const g = id => ($(id).value || '').trim();
+  const { errors, warnings, spFilled, adsFilled } = validate();
+
+  if (errors.length) {
+    setStatus(errors.join(' '), 'err');
+    return null;
+  }
+
+  const out = { mcpServers: {} };
+
+  if (spFilled) {
+    out.mcpServers['amazon-sp-api'] = {
+      command: 'npx',
+      args: [
+        '-y', 'mcp-remote@latest',
+        'https://lumitec-sp-api-mcp.fly.dev/mcp',
+        '--header', `X-Lumitec-Key:${g('lumitec_key')}`,
+        '--header', `X-SP-API-Client-Id:${g('sp_client_id')}`,
+        '--header', `X-SP-API-Client-Secret:${g('sp_client_secret')}`,
+        '--header', `X-SP-API-Refresh-Token:${g('sp_refresh_token')}`,
+        '--header', `X-SP-API-Region:${g('sp_region')}`,
+        '--header', `X-SP-API-Marketplace-Id:${g('sp_marketplace_id')}`,
+        '--header', `X-SP-API-Seller-Id:${g('sp_seller_id')}`,
+      ],
+    };
+  }
+
+  if (adsFilled) {
+    out.mcpServers['amazon-ads-api'] = {
+      command: 'npx',
+      args: [
+        '-y', 'mcp-remote@latest',
+        'https://lumitec-ads-api-mcp.fly.dev/mcp',
+        '--header', `X-Lumitec-Key:${g('lumitec_key')}`,
+        '--header', `X-Ads-Client-Id:${g('ads_client_id')}`,
+        '--header', `X-Ads-Client-Secret:${g('ads_client_secret')}`,
+        '--header', `X-Ads-Refresh-Token:${g('ads_refresh_token')}`,
+        '--header', `X-Ads-Region:${g('ads_region')}`,
+      ],
+    };
+  }
+
+  if (warnings.length) setStatus('⚠ ' + warnings.join(' ') + ' — config generated anyway.', 'warn');
+  else setStatus('✓ Config generated. Copy the JSON below into your claude_desktop_config.json.', 'ok');
+
+  return out;
+}
+
+$('gen').addEventListener('click', () => {
+  const cfg = buildConfig();
+  if (cfg) $('out').textContent = JSON.stringify(cfg, null, 2);
+});
+
+$('copy').addEventListener('click', async () => {
+  const text = $('out').textContent;
+  if (!text || text.startsWith('(fill')) { setStatus('Generate the config first.', 'err'); return; }
+  try {
+    await navigator.clipboard.writeText(text);
+    setStatus('✓ Copied to clipboard.', 'ok');
+  } catch {
+    setStatus('Copy failed — select the block manually and ⌘C.', 'err');
+  }
+});
+
+$('download').addEventListener('click', () => {
+  const text = $('out').textContent;
+  if (!text || text.startsWith('(fill')) { setStatus('Generate the config first.', 'err'); return; }
+  const blob = new Blob([text], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'lumitec-amazon-mcp.json';
+  a.click();
+});
+
+$('clear').addEventListener('click', () => {
+  if (!confirm('Clear all fields?')) return;
+  document.querySelectorAll('input, select').forEach(el => {
+    if (el.tagName === 'SELECT') el.selectedIndex = 0;
+    else el.value = '';
+  });
+  $('out').textContent = '(fill the form above and click Generate)';
+  setStatus('', '');
+});
+</script>
+</div>
+</body>
+</html>

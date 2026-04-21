@@ -5,7 +5,8 @@
   "homepage": "https://lumitec.ai",
   "author": {
     "name": "Lumitec Ltd",
-    "email": "support@lumitec.ai"
+    "email": "a.walters@lumitec.ai",
+    "url": "https://lumitec.ai"
   },
   "mcpServers": {
     "amazon-sp-api": {

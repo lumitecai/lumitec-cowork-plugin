@@ -27,6 +27,7 @@ Use region aliases, NOT AWS region codes:
 | France | FR | A13V1IB3VIYZZH |
 | Italy | IT | APJ6JRA9NG5V4 |
 | Spain | ES | A1RKKUPIHCS9HS |
+| Ireland | IE | A28R8C7NBKEWEA |
 | Netherlands | NL | A1805IZSGTT6HS |
 | Sweden | SE | A2NODRKZP88ZB9 |
 | Poland | PL | A1C3SOZRARQ6R3 |
@@ -35,6 +36,7 @@ Use region aliases, NOT AWS region codes:
 | UAE | AE | A2VIGQ35RCS4UG |
 | Egypt | EG | ARBP9OOSHTCHU |
 | Turkey | TR | A33AVAJ2PDY3EV |
+| South Africa | ZA | AE08WJ6YKNBMC |
 
 ### Far East (region: fe)
 | Country | Code | Marketplace ID |
@@ -42,6 +44,7 @@ Use region aliases, NOT AWS region codes:
 | Japan | JP | A1VC38T7YXB528 |
 | Australia | AU | A39IBJ37TRP1C6 |
 | India | IN | A21TJRUUN4KGV |
+| Singapore | SG | A19VAU5U5O7RUS |
 
 ## Critical Notes
 

@@ -39,8 +39,19 @@ Derive `{region}` from the session's configured region (na/eu/fe — visible in 
 | A13V1IB3VIYZZH | fr | `cache/eu-fr-listings.tsv` |
 | APJ6JRA9NG5V4 | it | `cache/eu-it-listings.tsv` |
 | A1RKKUPIHCS9HS | es | `cache/eu-es-listings.tsv` |
+| A28R8C7NBKEWEA | ie | `cache/eu-ie-listings.tsv` |
+| A1805IZSGTT6HS | nl | `cache/eu-nl-listings.tsv` |
+| A2NODRKZP88ZB9 | se | `cache/eu-se-listings.tsv` |
+| A1C3SOZRARQ6R3 | pl | `cache/eu-pl-listings.tsv` |
+| AMEN7PMS3EDWL  | be | `cache/eu-be-listings.tsv` |
+| A17E79C6D8DWNP | sa | `cache/eu-sa-listings.tsv` |
+| A2VIGQ35RCS4UG | ae | `cache/eu-ae-listings.tsv` |
+| ARBP9OOSHTCHU  | eg | `cache/eu-eg-listings.tsv` |
+| A33AVAJ2PDY3EV | tr | `cache/eu-tr-listings.tsv` |
 | A1VC38T7YXB528 | jp | `cache/fe-jp-listings.tsv` |
 | A39IBJ37TRP1C6 | au | `cache/fe-au-listings.tsv` |
+| A21TJRUUN4KGV  | in | `cache/fe-in-listings.tsv` |
+| A19VAU5U5O7RUS | sg | `cache/fe-sg-listings.tsv` |
 
 Each marketplace needs its own report run per marketplace ID. Multi-marketplace sellers (e.g. Pan-EU) need separate cache files per country.
 

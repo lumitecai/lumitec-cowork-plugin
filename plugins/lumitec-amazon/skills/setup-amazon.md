@@ -81,6 +81,7 @@ copy-paste-ready JSON snippet they can put into their Claude config file.
   - US: `ATVPDKIKX0DER`
   - Canada: `A2EUQ1WTGCTBG2`
   - Japan: `A1VC38T7YXB528`
+  - Australia: `A39IBJ37TRP1C6`
 - **Seller ID** — Seller Central → Settings → Account Info → Merchant
   Token. Format: starts with `A`, ~14 chars, all uppercase letters and
   digits (e.g. `A3JEKG1WEL1FC`).

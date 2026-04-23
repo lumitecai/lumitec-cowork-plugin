@@ -1,0 +1,13 @@
+@echo off
+setlocal
+REM Lumitec Amazon Advertising API MCP bridge — Windows wrapper.
+REM See amazon-sp-api.cmd.template for the full explanation of why this
+REM batch-file layer exists (refresh tokens contain "|" which cmd.exe
+REM interprets as a shell pipe).
+
+npx -y mcp-remote@latest "https://lumitec-ads-api-mcp.fly.dev/mcp" ^
+  --header "X-Lumitec-Key:{LUMITEC_MCP_KEY}" ^
+  --header "X-Ads-Client-Id:{ADS_API_CLIENT_ID}" ^
+  --header "X-Ads-Client-Secret:{ADS_API_CLIENT_SECRET}" ^
+  --header "X-Ads-Refresh-Token:{ADS_API_REFRESH_TOKEN}" ^
+  --header "X-Ads-Region:{ADS_API_REGION}"

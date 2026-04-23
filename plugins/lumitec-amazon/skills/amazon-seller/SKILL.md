@@ -57,6 +57,45 @@ before continuing.
 
 ---
 
+## ⚠️ Confirmation Policy — applies to every workflow
+
+**Never execute a write operation without explicit per-item confirmation
+from the user.** Read operations are fine to run directly; write
+operations change the user's Amazon account, and a mistake can cost real
+money or break real customer orders.
+
+**Every mutating SP-API tool requires confirmation:**
+
+| Tool | What it changes |
+|---|---|
+| `patchListingsItem` | A live listing's attributes (price, quantity, bullets, etc.) |
+| `putListingsItem` | Overwrites an entire listing |
+| `deleteListingsItem` | Removes a listing |
+| `createFeed` | Submits a bulk feed — can change hundreds of listings or inventory records in one shot |
+| `createReport` | Creates an async report (low-stakes but costs an API call) |
+| `cancelReport` / `cancelReportSchedule` | Cancels a running or scheduled report |
+| `createSubscription` / `deleteSubscription` | Changes notification wiring |
+| `createDestination` / `deleteDestination` | Changes where SQS/EventBridge events are delivered — destructive if the user has an existing pipeline |
+| `updateInventory` | Adjusts FBA inventory records |
+
+**The confirmation rule:**
+- Present your recommendation as a plain-English summary — "I'm about to
+  change SKU LUM-42's price from £19.99 to £17.99 on Amazon UK" — and
+  **wait** for a clear "yes, do it" / "go ahead" / "confirmed".
+- Analysing data and making a recommendation is **not** the same as
+  authorising the change.
+- For batched operations (e.g. 20 price changes in one call), confirm
+  **per item**, not a single yes for the whole batch, unless the user
+  explicitly says "do all of these".
+- If the user says "just fix it" without specifying what, stop and ask
+  exactly which items and which values you should apply.
+
+For read-only operations (`searchOrders`, `getCatalogItem`,
+`getInventorySummaries`, `listFinancialEvents`, etc.) — run them directly
+without asking; that's the point of the skill.
+
+---
+
 ## Cache-First Principle
 
 **Mental model: caches first, API as fallback, refresh at session start.**
@@ -229,7 +268,11 @@ This uses 1 API call total instead of hundreds.
 
 **Read first**: `references/listings-pitfalls.md` (critical traps)
 
-**⚠️ CONFIRMATION REQUIRED**: Never execute write operations (`patchListingsItem`, `putListingsItem`, `deleteListingsItem`) without explicit per-item confirmation from the user. Present recommendations and wait for a clear "go ahead" or "yes, do it." Analysing data is not the same as authorising changes. This applies to all price changes, quantity updates, and listing modifications.
+**Confirmation required for every write** — see the top-of-skill
+"Confirmation Policy" section. Listing writes in particular (`patchListingsItem`,
+`putListingsItem`, `deleteListingsItem`) are high-impact: wrong price,
+wrong quantity, wrong SKU targeted — all show up on Seller Central
+immediately.
 
 1. **Find the SKU first** — if user gives a product name or ASIN (not a SKU), grep the listings cache to find it:
    - `grep -i "product name" cache/{region}-{country}-listings.tsv`

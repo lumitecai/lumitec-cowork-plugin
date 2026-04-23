@@ -103,6 +103,15 @@
   <a href="setup.html">browser-based config generator</a>.
 </div>
 
+<div class="warn-box" id="windows-warning">
+  <strong>🪟 If you're on Windows, read this first.</strong> Three gotchas that bite every Windows user — all solved below, but worth knowing up-front:
+  <ul style="margin: 8px 0 0 18px; padding: 0">
+    <li>Amazon refresh tokens contain a pipe character (<code>|</code>) that cmd.exe interprets as a shell pipe. <strong>We ship a <code>.cmd</code> wrapper template</strong> that wraps it correctly.</li>
+    <li>The <strong>Microsoft Store version of Claude</strong> uses a different config path than the regular installer. Both are covered below.</li>
+    <li><strong>Don't click the blue "Install" button</strong> on an Amazon connector card in Cowork — it triggers an OAuth flow that doesn't apply here. Use the setup skill instead.</li>
+  </ul>
+</div>
+
 <h2><span class="step-num">0</span>Before you start</h2>
 <p>You'll need these four things ready before diving in. The Amazon credential gathering is the longest part — usually 30–60 minutes the first time if you've never set up an SP-API developer account.</p>
 
@@ -216,6 +225,26 @@
 <details>
   <summary>Tools don't appear after restart</summary>
   <p>Cowork might still be running in the background. Check the system tray carefully — right-click the Claude icon, click <strong>Quit</strong>, then reopen.</p>
+</details>
+
+<details>
+  <summary>Windows: <code>'IwEBI...' is not recognized as an internal or external command</code></summary>
+  <p>This is the refresh-token pipe-character issue. The setup skill ships a <code>.cmd</code> wrapper per MCP that quotes the headers properly. If you see this error, you're pointing <code>claude_desktop_config.json</code> at <code>npx</code> directly instead of at a <code>.cmd</code> file. Re-run <em>"set up Amazon"</em> in a new Cowork conversation and let the skill regenerate the config with the wrapper approach.</p>
+</details>
+
+<details>
+  <summary>Windows: <code>spawn npx ENOENT</code></summary>
+  <p>Node.js isn't installed or isn't on your PATH. Install from <a href="https://nodejs.org/en/download" target="_blank" rel="noopener">nodejs.org</a>, close and reopen your terminal, verify with <code>node --version</code>, then restart Claude.</p>
+</details>
+
+<details>
+  <summary>Windows: edited config file but changes don't take effect</summary>
+  <p>There are <strong>two</strong> possible config paths on Windows. If you installed Claude from <a href="https://claude.com">claude.com</a>, your config is at <code>%APPDATA%\Claude\claude_desktop_config.json</code>. If you installed from the <strong>Microsoft Store</strong>, it's at <code>%LOCALAPPDATA%\Packages\Claude_&lt;hash&gt;\LocalCache\Roaming\Claude\claude_desktop_config.json</code>. Check both; you were probably editing the wrong one.</p>
+</details>
+
+<details>
+  <summary>Cowork: I clicked "Install" on the Amazon connector and got an OAuth error</summary>
+  <p>Cowork's Personal Plugins UI shows a blue <strong>Install</strong> button on each connector card. Clicking it kicks off an OAuth flow that doesn't match how Lumitec's MCPs authenticate (per-request headers, not OAuth). Ignore that button entirely. Start a new chat and say <em>"set up Lumitec Amazon"</em> — the skill drives the whole install for you.</p>
 </details>
 
 <details>

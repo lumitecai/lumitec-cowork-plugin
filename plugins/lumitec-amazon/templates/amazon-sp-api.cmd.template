@@ -1,0 +1,24 @@
+@echo off
+setlocal
+REM Lumitec Amazon SP-API MCP bridge — Windows wrapper.
+REM
+REM WHY THIS FILE EXISTS: Amazon refresh tokens start with "Atzr|" and
+REM contain a literal pipe character. When Claude Desktop on Windows
+REM spawns `npx mcp-remote ... --header "X-...-Refresh-Token:Atzr|foo"`
+REM directly, the pipe goes through cmd.exe's batch-shim layer and is
+REM interpreted as a shell pipe — producing a cryptic error like
+REM    'IwEBIHDnOQ...' is not recognized as an internal or external command
+REM Wrapping the whole invocation in a batch file with each header value
+REM double-quoted keeps cmd.exe's lexer off the pipe.
+REM
+REM Replace every {PLACEHOLDER} below with your actual value before saving.
+REM Do NOT put quotes around the placeholders themselves — they're already quoted.
+
+npx -y mcp-remote@latest "https://lumitec-sp-api-mcp.fly.dev/mcp" ^
+  --header "X-Lumitec-Key:{LUMITEC_MCP_KEY}" ^
+  --header "X-SP-API-Client-Id:{SP_API_CLIENT_ID}" ^
+  --header "X-SP-API-Client-Secret:{SP_API_CLIENT_SECRET}" ^
+  --header "X-SP-API-Refresh-Token:{SP_API_REFRESH_TOKEN}" ^
+  --header "X-SP-API-Region:{SP_API_REGION}" ^
+  --header "X-SP-API-Marketplace-Id:{SP_API_MARKETPLACE_ID}" ^
+  --header "X-SP-API-Seller-Id:{SP_API_SELLER_ID}"

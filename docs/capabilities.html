@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lumitec Amazon — What You Can Do</title>
+<meta name="description" content="What you can ask Claude to do with your Amazon Seller Central and Advertising accounts via the Lumitec MCPs.">
+<style>
+  :root {
+    --bg: #0f1115;
+    --card: #15181f;
+    --fg: #e6e8ec;
+    --dim: #9aa0a6;
+    --accent: #ff6b35;
+    --accent-soft: #ff6b3520;
+    --ok: #4ade80;
+    --border: #2a2f3a;
+    --code-bg: #0b0d11;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    line-height: 1.6; }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 48px 24px 140px; }
+
+  .hero { margin-bottom: 40px; padding-bottom: 32px; border-bottom: 1px solid var(--border); }
+  .eyebrow { color: var(--accent); font-size: 13px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+  h1 { font-size: 38px; margin: 0 0 14px; letter-spacing: -0.02em; line-height: 1.15; }
+  .hero p { color: var(--dim); font-size: 17px; margin: 0 0 20px; max-width: 640px; }
+
+  h2 { font-size: 22px; margin: 48px 0 14px; letter-spacing: -0.01em;
+    display: flex; align-items: center; gap: 12px; }
+  h2 .emoji { font-size: 22px; line-height: 1; }
+
+  h3 { font-size: 15px; margin: 18px 0 8px; font-weight: 600; color: var(--dim);
+    text-transform: uppercase; letter-spacing: 0.05em; }
+
+  p  { margin: 10px 0; color: var(--fg); }
+  a  { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .capability-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px; margin: 16px 0; }
+  .cap-card { background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 18px 20px; }
+  .cap-card h4 { margin: 0 0 10px; font-size: 16px; font-weight: 600; }
+  .cap-card p { margin: 0 0 10px; font-size: 14px; color: var(--dim); }
+  .cap-card ul { padding-left: 18px; margin: 0; }
+  .cap-card li { font-size: 14px; margin: 4px 0; color: var(--fg); }
+
+  .prompt { background: var(--code-bg); border: 1px solid var(--border);
+    border-left: 3px solid var(--accent); border-radius: 6px;
+    padding: 12px 16px; margin: 10px 0; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13.5px; color: #e6e8ec; }
+  .prompt::before { content: "💬  "; opacity: 0.6; }
+
+  .intro-card { background: var(--accent-soft); border-left: 3px solid var(--accent);
+    padding: 14px 20px; border-radius: 0 8px 8px 0; margin: 24px 0; font-size: 15px; }
+
+  .btn { display: inline-block; background: var(--accent); color: #111;
+    padding: 11px 22px; border-radius: 6px; font-size: 15px; font-weight: 600;
+    text-decoration: none; margin: 6px 8px 6px 0; }
+  .btn:hover { filter: brightness(1.08); text-decoration: none; }
+  .btn.secondary { background: transparent; color: var(--fg); border: 1px solid var(--border); }
+  .btn.secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px;
+    border: 1px solid var(--border); }
+
+  .section-intro { color: var(--dim); font-size: 14.5px; max-width: 700px; margin: 0 0 16px; }
+
+  .footer { margin-top: 72px; padding-top: 28px; border-top: 1px solid var(--border);
+    color: var(--dim); font-size: 13px; }
+  .footer a { color: var(--dim); text-decoration: underline; }
+
+  .nav { margin-bottom: 24px; font-size: 14px; }
+  .nav a { color: var(--dim); margin-right: 16px; }
+  .nav a.active { color: var(--fg); }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="nav">
+  <a href="index.html">← Install guide</a>
+  <a href="capabilities.html" class="active">What you can do</a>
+  <a href="setup.html">Manual config generator</a>
+</div>
+
+<div class="hero">
+  <div class="eyebrow">Lumitec Amazon</div>
+  <h1>What you can ask Claude to do</h1>
+  <p>Once the Lumitec Amazon MCPs are connected, Claude can operate your Amazon business directly — query orders, manage listings, analyse margins, tune ad campaigns, and more. Everything goes through official Amazon APIs; nothing is scraped.</p>
+  <a class="btn" href="index.html">Install it →</a>
+  <a class="btn secondary" href="https://github.com/lumitecai/lumitec-cowork-plugin">GitHub</a>
+</div>
+
+<div class="intro-card">
+  <strong>Two MCPs. One install.</strong> The plugin bundles two connected services — <strong>SP-API</strong> (everything in Seller Central) and <strong>Advertising API</strong> (all PPC and DSP). Both speak to Amazon on your behalf using credentials you provide once at setup.
+</div>
+
+<h2><span class="emoji">📦</span>Orders &amp; Sales</h2>
+<p class="section-intro">Pull individual orders, search by date range or status, compute sales velocity, or generate bulk sales reports. Works across every marketplace you participate in.</p>
+
+<div class="capability-grid">
+  <div class="cap-card">
+    <h4>Recent orders</h4>
+    <ul>
+      <li>Today's / this week's orders</li>
+      <li>Filter by status, marketplace, order value</li>
+      <li>Full order details + line items</li>
+    </ul>
+  </div>
+  <div class="cap-card">
+    <h4>Sales analysis</h4>
+    <ul>
+      <li>Units sold per SKU over any period</li>
+      <li>Sales velocity, seasonality trends</li>
+      <li>Pan-EU breakdown by country</li>
+    </ul>
+  </div>
+  <div class="cap-card">
+    <h4>Bulk reporting</h4>
+    <ul>
+      <li>30-day order reports (cached locally for fast re-querying)</li>
+      <li>Returns, reimbursements</li>
+      <li>Financial settlement reports</li>
+    </ul>
+  </div>
+</div>
+
+<h3>Example prompts</h3>
+<div class="prompt">Show me all orders from the last 7 days, grouped by marketplace.</div>
+<div class="prompt">How many units of SKU LUM-42 sold in the UK this month vs last month?</div>
+<div class="prompt">Which of my top-20 SKUs are trending down on sales in Germany?</div>
+
+<hr>
+
+<h2><span class="emoji">📋</span>Listings</h2>
+<p class="section-intro">Inspect, update, and manage product listings across all marketplaces. Includes the pan-EU suspended-listings workflow and multi-SKU-ASIN handling.</p>
+
+<div class="capability-grid">
+  <div class="cap-card">
+    <h4>Find &amp; inspect</h4>
+    <ul>
+      <li>Search listings by keyword, ASIN, or SKU</li>
+      <li>See current price, stock, status, fulfilment channel</li>
+      <li>Spot multi-SKU ASINs (FBA + MFN variants)</li>
+    </ul>
+  </div>
+  <div class="cap-card">
+    <h4>Update</h4>
+    <ul>
+      <li>Change price (with repricer-conflict detection)</li>
+      <li>Adjust quantity</li>
+      <li>Patch attributes, delete listings — always with confirmation</li>
+    </ul>
+  </div>
+  <div class="cap-card">
+    <h4>Compliance</h4>
+    <ul>
+      <li>Find suspended listings per marketplace</li>
+      <li>Surface listing issues (GPSR, CE, VAT gaps)</li>
+      <li>Pricing ladder audits (per-unit economics)</li>
+    </ul>
+  </div>
+</div>
+
+<h3>Example prompts</h3>
+<div class="prompt">Find every listing with "reading glasses" in the title and show me price + stock.</div>
+<div class="prompt">Which EU marketplaces have suspended listings right now, and what are the reasons?</div>
+<div class="prompt">Change the price of SKU LUM-42 to £24.99 in the UK — but confirm with me first.</div>
+
+<hr>
+
+<h2><span class="emoji">📦</span>FBA &amp; Inventory</h2>
+<p class="section-intro">Check stock levels, plan reorders, track inbound shipments, and compute days-of-stock coverage by combining real-time inventory with cached sales velocity.</p>
+
+<div class="capability-grid">
+  <div class="cap-card">
+    <h4>Current stock</h4>
+    <ul>
+      <li>FBA + MFN inventory per SKU</li>
+      <li>Across all marketplaces in one call</li>
+      <li>Eligibility for FBA programs</li>
+    </ul>
+  </div>
+  <div class="cap-card">
+    <h4>Inventory coverage</h4>
+    <ul>
+      <li>Days of stock remaining per SKU</li>
+      <li>Reorder-now alerts under 14 days</li>
+      <li>Weighted thresholds for top sellers</li>
+    </ul>
+  </div>
+  <div class="cap-card">
+    <h4>Inbound planning</h4>
+    <ul>
+      <li>Active inbound plan tracking</li>
+      <li>Shipment details and status</li>
+      <li>New-2024 inbound API</li>
+    </ul>
+  </div>
+</div>
+
+<h3>Example prompts</h3>
+<div class="prompt">Which of my SKUs have less than 14 days of stock at current velocity? Flag anything critical.</div>
+<div class="prompt">Give me the FBA inventory for SKUs LUM-10 through LUM-20 in one go.</div>
+<div class="prompt">What inbound shipments are currently on their way to Amazon warehouses?</div>
+
+<hr>
+
+<h2><span class="emoji">💰</span>Pricing &amp; Buy Box</h2>
+<p class="section-intro">Monitor your own prices, watch competitor offers, and compare against the buy box across every marketplace. Built-in batching means up to 20 ASINs per call — fast.</p>
+
+<div class="capability-grid">
+  <div class="cap-card">
+    <h4>Your pricing</h4>
+    <ul>
+      <li>Current listing prices in bulk</li>
+      <li>List-price vs sale-price (strikethrough)</li>
+      <li>B2B vs retail pricing</li>
+    </ul>
+  </div>
+  <div class="cap-card">
+    <h4>Competitive intel</h4>
+    <ul>
+      <li>Competitor offers for any ASIN</li>
+      <li>Buy-box pricing &amp; winner</li>
+      <li>Lowest-offer tracking</li>
+    </ul>
+  </div>
+  <div class="cap-card">
+    <h4>Audits</h4>
+    <ul>
+      <li>Charm pricing compliance (.99 endings)</li>
+      <li>Pack-ladder consistency</li>
+      <li>Cross-marketplace price deltas</li>
+    </ul>
+  </div>
+</div>
+
+<h3>Example prompts</h3>
+<div class="prompt">Compare my prices against the buy box for these 15 ASINs and flag any where I'm &gt;10% over.</div>
+<div class="prompt">Build me a pricing ladder for the LUM reading-glasses family — 3-pack, 6-pack, 12-pack. Check per-unit economics.</div>
+<div class="prompt">Who's the buy-box winner on ASIN B0XXXXXXXX right now?</div>
+
+<hr>
+
+<h2><span class="emoji">📊</span>Financials &amp; Profitability</h2>
+<p class="section-intro">Understand true per-order margin after Amazon's commission, FBA fees, digital services tax, and promotions. Pull settlement-period financial events and aggregate by fee type.</p>
+
+<div class="capability-grid">
+  <div class="cap-card">
+    <h4>Settlements</h4>
+    <ul>
+      <li>Financial event groups (settlement periods)</li>
+      <li>Per-order fee breakdown</li>
+      <li>Refunds, adjustments, reimbursements</li>
+    </ul>
+  </div>
+  <div class="cap-card">
+    <h4>Margin analysis</h4>
+    <ul>
+      <li>Net per order after all fees</li>
+      <li>Average margin per SKU</li>
+      <li>Trends across weeks/months</li>
+    </ul>
+  </div>
+  <div class="cap-card">
+    <h4>Fee categorisation</h4>
+    <ul>
+      <li>Principal, Commission, FBA, DST breakdowns</li>
+      <li>Marketplace-native currency</li>
+      <li>Promotional cost tracking</li>
+    </ul>
+  </div>
+</div>
+
+<h3>Example prompts</h3>
+<div class="prompt">What's my average net margin per order for SKU LUM-42 in the UK for the last settlement period?</div>
+<div class="prompt">Show me a fee breakdown for last week's orders — principal, commission, FBA, digital services tax.</div>
+<div class="prompt">Were there any significant refunds or adjustments in the most recent settlement group?</div>
+
+<hr>
+
+<h2><span class="emoji">🔍</span>Catalog Research</h2>
+<p class="section-intro">Look up any product on Amazon — not just yours — for pricing research, competitive analysis, and product-launch decisions.</p>
+
+<div class="capability-grid">
+  <div class="cap-card">
+    <h4>ASIN lookup</h4>
+    <ul>
+      <li>Full catalog details by ASIN</li>
+      <li>Images, bullets, attributes, dimensions</li>
+      <li>Sales rank, browse category</li>
+    </ul>
+  </div>
+  <div class="cap-card">
+    <h4>Keyword search</h4>
+    <ul>
+      <li>Find any product by keyword</li>
+      <li>Filter by marketplace</li>
+      <li>See full attribute set</li>
+    </ul>
+  </div>
+  <div class="cap-card">
+    <h4>Fee estimation</h4>
+    <ul>
+      <li>Estimated Amazon fees for any ASIN/SKU at any price point</li>
+      <li>Profitability modelling for new products</li>
+    </ul>
+  </div>
+</div>
+
+<h3>Example prompts</h3>
+<div class="prompt">Look up ASIN B0XXXXXXXX on Amazon.co.uk and show me full catalog details.</div>
+<div class="prompt">Find all products on Amazon US for "blue light glasses" under £20 and estimate FBA fees.</div>
+<div class="prompt">What would my Amazon fees be if I listed this product at £14.99 in Germany?</div>
+
+<hr>
+
+<h2><span class="emoji">📣</span>Advertising &amp; PPC</h2>
+<p class="section-intro">Full Amazon Advertising API access — Sponsored Products, Sponsored Brands, Sponsored Display, DSP, and AMC. Report on ACoS/TACoS, tune bids, harvest keywords, audit campaigns.</p>
+
+<div class="capability-grid">
+  <div class="cap-card">
+    <h4>Performance</h4>
+    <ul>
+      <li>ACoS, TACoS, spend, sales</li>
+      <li>Campaign / ad group / keyword level</li>
+      <li>Search-term reports</li>
+    </ul>
+  </div>
+  <div class="cap-card">
+    <h4>Optimisation</h4>
+    <ul>
+      <li>Bid adjustments (batch)</li>
+      <li>Negative keyword harvesting</li>
+      <li>Budget pacing alerts</li>
+    </ul>
+  </div>
+  <div class="cap-card">
+    <h4>Campaign management</h4>
+    <ul>
+      <li>Pause, archive, resume</li>
+      <li>Audit setup (targeting, bids, budget)</li>
+      <li>Multi-profile / multi-marketplace</li>
+    </ul>
+  </div>
+</div>
+
+<h3>Example prompts</h3>
+<div class="prompt">Which of my Sponsored Products campaigns had ACoS above 40% last week? Break down by ad group.</div>
+<div class="prompt">Harvest winning search terms from the last 14 days and suggest keywords to add as exact match.</div>
+<div class="prompt">Which campaigns are pacing to hit their monthly budget before end of week?</div>
+
+<hr>
+
+<h2><span class="emoji">⚡</span>How it's fast</h2>
+<p>The skill uses a <strong>cache-first pattern</strong> for bulk data — it pulls a single 30-day orders report or a full listings dump, stores it on your machine, and queries it locally for ad-hoc questions. That means "how many sold?" queries return in a second, not a minute, and don't consume your Amazon API rate limit. <a href="https://github.com/lumitecai/lumitec-cowork-plugin/blob/main/plugins/lumitec-amazon/skills/amazon-seller/references/caching-strategy.md">Caching details →</a></p>
+
+<h2><span class="emoji">🔒</span>What Lumitec sees</h2>
+<p><strong>Nothing at rest.</strong> Your Amazon credentials travel with each request as HTTP headers and are discarded from memory after each call. Order data, listings, financial events — none of it is stored on Lumitec's side. The cache lives only on your machine. You remain the registered Amazon developer and sole custodian of your data.</p>
+
+<div class="footer">
+  <p><a href="index.html">Install guide</a> · <a href="setup.html">Manual config generator</a> · <a href="https://github.com/lumitecai/lumitec-cowork-plugin">GitHub</a> · Questions? <a href="mailto:a.walters@lumitec.ai">a.walters@lumitec.ai</a></p>
+</div>
+
+</div>
+</body>
+</html>

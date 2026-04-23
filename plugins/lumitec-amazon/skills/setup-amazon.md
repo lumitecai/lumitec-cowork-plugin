@@ -47,12 +47,47 @@ Cowork, or using the `claude` CLI?"*
 
 ---
 
+## 🪟 Known Windows gotchas — read first if the user is on Windows
+
+Three things bite every Windows user. Call these out **before** you
+generate any config:
+
+1. **`|` in refresh tokens breaks cmd.exe.** Amazon refresh tokens start
+   with `Atzr|`. When Claude Desktop on Windows spawns `npx mcp-remote ...
+   --header "X-...-Refresh-Token:Atzr|xxx"` directly, the pipe goes
+   through a cmd.exe shim and is interpreted as a shell pipe. The error
+   looks like `'IwEBI...' is not recognized as an internal or external
+   command`. **Fix: on Windows, always generate a `.cmd` wrapper file per
+   MCP** and point the config at the .cmd, not directly at `npx`. See
+   `templates/amazon-sp-api.cmd.template` and `templates/amazon-ads-api.cmd.template`
+   inside this plugin.
+
+2. **Microsoft Store Claude uses a sandboxed config path.** Regular
+   installer Claude: `%APPDATA%\Claude\claude_desktop_config.json`.
+   Microsoft-Store-installed Claude:
+   `%LOCALAPPDATA%\Packages\Claude_<hash>\LocalCache\Roaming\Claude\claude_desktop_config.json`
+   (where `<hash>` is something like `pzs8sxrjxfjjc`). **Always check
+   both paths** or ask the user which install variant they have. In
+   Cowork's VM, both paths surface under the mount.
+
+3. **Plugin connector "Install" button triggers OAuth (don't click it).**
+   Cowork's Personal Plugins UI shows an **Install** button on each
+   connector card. Clicking it initiates an OAuth flow that doesn't
+   match our header-based auth, and returns an error. Tell the user:
+   *"Don't click the blue Install button on the connector — instead,
+   say 'set up Lumitec Amazon' and let me drive the full flow."*
+
 ## Cowork automation flow
 
 When `mcp__workspace__bash` is available you can fully drive the install.
 The user's manual work drops to: install Node (if not already), approve
 one directory mount, answer credential questions, and restart Claude at
 the end.
+
+**On Windows**, the automation flow is slightly different — you write
+`.cmd` wrapper files instead of inlining the `npx` command in the config
+(see gotcha #1 above). Full details in "Windows-specific Cowork flow"
+further down.
 
 ### Step 1 — Prerequisites check (inside the VM)
 
@@ -157,6 +192,77 @@ keys you introduced) so they can see what landed. Then:
 Once the user is back, the MCP tools (`checkCredentials`,
 `getMarketplaceParticipations`, etc.) should be visible in your tool
 list. Run `checkCredentials` on both MCPs and report the outcome.
+
+---
+
+## Windows-specific Cowork flow
+
+On Windows, steps 4–6 change as follows. (Steps 1–3 and 7–8 are unchanged.)
+
+### Step 4-W — Detect which Claude install variant
+
+Two possible config-file locations. Test both:
+
+```bash
+# Regular installer
+ls /sessions/<name>/mnt/Claude/claude_desktop_config.json 2>/dev/null
+# MS Store variant
+ls /sessions/<name>/mnt/Claude/../../../Packages/Claude_*/LocalCache/Roaming/Claude/claude_desktop_config.json 2>/dev/null
+```
+
+If neither is found, ask the user: *"Did you install Claude from
+claude.com or from the Microsoft Store?"* — the Store variant puts its
+config under `%LOCALAPPDATA%\Packages\Claude_<hash>\LocalCache\Roaming\Claude\`.
+You may need to `request_cowork_directory` on a different host path
+to find it.
+
+### Step 5-W — Generate .cmd wrapper files
+
+Instead of inlining the `npx` command in `claude_desktop_config.json`,
+write two batch files in a dedicated Lumitec directory:
+
+```
+%USERPROFILE%\.lumitec\amazon-sp-api.cmd
+%USERPROFILE%\.lumitec\amazon-ads-api.cmd
+```
+
+Use the templates at `templates/amazon-sp-api.cmd.template` and
+`templates/amazon-ads-api.cmd.template` inside the plugin directory.
+Replace every `{PLACEHOLDER}` with the user's actual value. Every
+header value is already double-quoted in the template — don't re-quote
+them.
+
+Write via `mcp__workspace__bash tee`, same atomic-write pattern as the
+JSON file (temp + rename).
+
+### Step 6-W — Minimal config.json
+
+The config becomes trivially small:
+
+```json
+{
+  "mcpServers": {
+    "amazon-sp-api": {
+      "command": "C:\\Users\\<username>\\.lumitec\\amazon-sp-api.cmd"
+    },
+    "amazon-ads-api": {
+      "command": "C:\\Users\\<username>\\.lumitec\\amazon-ads-api.cmd"
+    }
+  }
+}
+```
+
+Substitute the actual username. Note the escaped backslashes (`\\`).
+Merge this into any existing `mcpServers` the user already has.
+
+### Windows troubleshooting table
+
+| Symptom | Root cause | Fix |
+|---|---|---|
+| `'IwEBI...' is not recognized as an internal or external command` | Refresh token pipe interpreted by cmd.exe | Confirm the .cmd wrapper has header values double-quoted |
+| `spawn npx ENOENT` | Node not on PATH | User needs to install Node.js; restart terminal after |
+| Claude Desktop shows "MCP server not found" after edit | Edited the wrong config file (Store vs installer) | Check which variant the user has, edit the matching path |
+| Clicking Install on connector card opens browser to OAuth error | Cowork's connector UI is incompatible with our header auth | Tell user to ignore the Install button; use the setup skill instead |
 
 ---
 
